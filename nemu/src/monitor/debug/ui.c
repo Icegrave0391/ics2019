@@ -124,7 +124,7 @@ static int cmd_x(char *args){
     printf("0x%08x: ", base);
     for(int o = 0; o < 4; o++){
       uint32_t data = paddr_read(base + o, 1);
-      printf("%02x", (unsigned char)(data));
+      printf("%02x ", (unsigned char)(data));
     }
     printf("\n");
   }
