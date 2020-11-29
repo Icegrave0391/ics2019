@@ -128,6 +128,7 @@ static int cmd_x(char *args){
     }
     printf("\n");
   }
+  return 0;
 }
 
 void ui_mainloop(int is_batch_mode) {
