@@ -10,8 +10,7 @@ const char *regsl[] = {
 void isa_reg_display() {
   printf("General Purpose Registers:\n");
   int num_regs = sizeof(regsl) / sizeof(regsl[0]);
-  int i = 0;
-  for(i; i < num_regs; i++){
+  for(int i = 0; i < num_regs; i++){
     int index = check_reg_index(i);
     printf("\t%-4s = 0x%08x\n", regsl[index], reg_l(index));
   }
