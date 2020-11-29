@@ -126,7 +126,7 @@ static int cmd_x(char *args){
       uint32_t data = paddr_read(base + o, 1);
       printf("%02x ", (unsigned char)(data));
     }
-    printf("\n");
+    printf("(0x%08x)\n", paddr_read(base, 4));
   }
   return 0;
 }
