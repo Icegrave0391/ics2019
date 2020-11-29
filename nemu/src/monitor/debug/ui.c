@@ -8,6 +8,7 @@
 
 void isa_reg_display();
 void cpu_exec(uint64_t);
+uint32_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -39,6 +40,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 static int cmd_info(char *args);
 static int cmd_si(char *args);
+static int cmd_x(char *args);
 static struct {
   char *name;
   char *description;
@@ -47,8 +49,9 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  { "info", "Print the program state (r: registers) and (w: watchpoints)", cmd_info},
-  { "si", "Step over the program by n steps", cmd_si},
+  { "info", "Print the program state (r: registers) and (w: watchpoints)", cmd_info },
+  { "si", "Step over the program by n steps", cmd_si },
+  { "x", "Scan n memory units from addr[expr] (x N expr)", cmd_x },
   /* TODO: Add more commands */
 };
 
@@ -105,6 +108,26 @@ static int cmd_si(char *args){
     }
   }
   return 0;
+}
+
+static int cmd_x(char *args){
+  int n = 0;
+  paddr_t addr = 0;
+  // TODO: only hex number for expr
+  sscanf(args, "%d %x", &n, &addr);
+  if (!(n > 0 && addr)){
+    printf("Usage: x <num> <addr(hex)>\n");
+    return 0;
+  }
+  for(int i = 0; i < n; i++){
+    paddr_t base = addr + 4 * i;
+    printf("0x%08x: ", base);
+    for(int o = 0; o < 4; o++){
+      uint32_t data = paddr_read(base + o, 1);
+      printf("%02x", (unsigned char)(data));
+    }
+    printf("\n");
+  }
 }
 
 void ui_mainloop(int is_batch_mode) {
