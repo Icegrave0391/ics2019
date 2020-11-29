@@ -12,7 +12,8 @@ void isa_reg_display() {
   int num_regs = sizeof(regsl) / sizeof(regsl[0]);
   for(int i = 0; i < num_regs; i++){
     int index = check_reg_index(i);
-    printf("\t%-4s = 0x%08x\n", regsl[index], reg_l(index));
+    rtlreg_t reg = reg_l(index);
+    printf("\t%-3s = 0x%08x (%d)\n", regsl[index], reg, reg);
   }
 }
 
