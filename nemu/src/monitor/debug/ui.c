@@ -2,11 +2,11 @@
 #include "monitor/expr.h"
 #include "monitor/watchpoint.h"
 #include "nemu.h"
-
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
+void isa_reg_display();
 void cpu_exec(uint64_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -38,6 +38,8 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_info(char *agrs);
+
 static struct {
   char *name;
   char *description;
@@ -46,9 +48,8 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  { "info", "Print the program state (r: registers) and (w: watchpoints)", cmd_info},
   /* TODO: Add more commands */
-
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -72,6 +73,20 @@ static int cmd_help(char *args) {
       }
     }
     printf("Unknown command '%s'\n", arg);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args){
+  char *arg = strtok(NULL, " ");
+  if (arg == NULL){
+    printf("Use info r or info w instead!\n");
+  }
+  else if (strcmp(arg, "r") == 0){
+    isa_reg_display();
+  }
+  else if (strcmp(arg, "w") == 0){
+
   }
   return 0;
 }
