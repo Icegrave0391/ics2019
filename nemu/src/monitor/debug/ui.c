@@ -37,9 +37,8 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_help(char *args);
-
-static int cmd_info(char *agrs);
-
+static int cmd_info(char *args);
+static int cmd_si(char *args);
 static struct {
   char *name;
   char *description;
@@ -49,6 +48,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "info", "Print the program state (r: registers) and (w: watchpoints)", cmd_info},
+  { "si", "Step over the program by n steps", cmd_si},
   /* TODO: Add more commands */
 };
 
@@ -87,6 +87,22 @@ static int cmd_info(char *args){
   }
   else if (strcmp(arg, "w") == 0){
 
+  }
+  return 0;
+}
+
+static int cmd_si(char *args){
+  char *arg = strtok(NULL, " ");
+  if (arg == NULL){
+    cpu_exec(1);
+  }
+  else
+  {
+    int n;
+    sscanf(arg, "%d", &n);
+    if (n > 0){
+      cpu_exec(n);
+    }
   }
   return 0;
 }
