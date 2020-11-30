@@ -41,6 +41,12 @@ void reg_test() {
 }
 
 void isa_reg_display() {
+  printf("General Purpose Registers:\n");
+  int num_regs = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]);
+  for(int i = 0; i < num_regs; i++){
+    int index = check_reg_index(i);
+    printf("\t%-3s = 0x%08x (%d)\n", reg_name(index, 4), reg_l(index), reg_l(index));
+  }
 }
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
