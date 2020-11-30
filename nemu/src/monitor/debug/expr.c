@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <regex.h>
 
+void test_expr();
 enum {
   TK_NOTYPE = 256, TK_EQ,
   /* TODO: Add more token types */
