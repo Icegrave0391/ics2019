@@ -53,6 +53,8 @@ void init_regex() {
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
   }
+
+  expr_test();
 }
 
 typedef struct token {

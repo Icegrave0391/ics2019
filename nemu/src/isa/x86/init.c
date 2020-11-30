@@ -28,7 +28,4 @@ void init_isa(void) {
 
   /* Initialize this virtual computer system. */
   restart();
-
-  /* test for expr */
-  expr_test();
 }
