@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <regex.h>
 
-void test_expr();
+void expr_test(void);
 enum {
   TK_NOTYPE = 256, TK_EQ,
   /* TODO: Add more token types */
@@ -29,7 +29,7 @@ static struct rule {
   {"\\-", '-'},         // sub
   {"\\*", '*'},         // times
   {"\\/", '/'},         // divide
-  {"0[Xx][\\da-fA-F]+", TK_HEX},    // hex number
+  {"0[Xx][0-9a-fA-F]+", TK_HEX},    // hex number
   {"[\\d]+", TK_DECI},  // decimal number 
   {"\\(", TK_LP},       // left parenthesis
   {"\\)", TK_RP},       // right parenthesis
