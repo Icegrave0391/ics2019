@@ -29,7 +29,7 @@ static struct rule {
   {"\\-", '-'},         // sub
   {"\\*", '*'},         // times
   {"\\/", '/'},         // divide
-  {"0[Xx][0-9a-fA-F]+", TK_HEX},    // hex number
+  {"0[Xx][\da-fA-F]+", TK_HEX},    // hex number
   {"[\\d]+", TK_DECI},  // decimal number 
   {"\\(", TK_LP},       // left parenthesis
   {"\\)", TK_RP},       // right parenthesis
@@ -46,8 +46,6 @@ void init_regex() {
   int i;
   char error_msg[128];
   int ret;
-  Log("number of NR_REGEX: %ld\n", NR_REGEX);
-  printf("number of NR_REGEX: %ld\n", NR_REGEX);
   for (i = 0; i < NR_REGEX; i ++) {
     ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
     if (ret != 0) {
