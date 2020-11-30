@@ -45,7 +45,7 @@ void init_regex() {
   int i;
   char error_msg[128];
   int ret;
-
+  Log("number of REGEX: %d\n", NR_REGEX);
   for (i = 0; i < NR_REGEX; i ++) {
     ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
     if (ret != 0) {
