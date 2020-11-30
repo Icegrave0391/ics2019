@@ -7,10 +7,10 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ
-
+  TK_NOTYPE = 256, TK_EQ,
   /* TODO: Add more token types */
-
+  TK_HEX, TK_DECI,
+  TK_LP, TK_RP,
 };
 
 static struct rule {
@@ -24,7 +24,14 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
-  {"==", TK_EQ}         // equal
+  {"==", TK_EQ},        // equal
+  {"\\-", '-'},         // sub
+  {"\\*", '*'},         // times
+  {"\\/", '/'},         // divide
+  {"0[Xx][\\da-zA-Z]+", TK_HEX},    // hex number
+  {"[\\d]+", TK_DECI},  // decimal number 
+  {"\\(", TK_LP},       // left parenthesis
+  {"\\)", TK_RP},       // right parenthesis
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -79,8 +86,33 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
 
+        if (substr_len >= 32){
+          printf("Matched a redundant length.\n");
+          assert(0);
+        }
+        if (nr_token >= 32){
+          printf("Token number exceeded.\n");
+          return false;
+        }        
+
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NOTYPE:
+            break;
+          case '+':
+          case '-':
+          case '*':
+          case '/':
+          case TK_LP:
+          case TK_RP:
+            tokens[nr_token].type = rules[i].token_type;
+            nr_token += 1;
+            break;
+          case TK_HEX:
+          case TK_DECI:
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].type = rules[i].token_type;
+            nr_token += 1;
+            break;
         }
 
         break;
