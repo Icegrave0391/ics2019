@@ -28,7 +28,7 @@ static struct rule {
   {"\\-", '-'},         // sub
   {"\\*", '*'},         // times
   {"\\/", '/'},         // divide
-  {"0[Xx][\\da-zA-Z]+", TK_HEX},    // hex number
+  {"0[Xx][\\da-fA-F]+", TK_HEX},    // hex number
   {"[\\d]+", TK_DECI},  // decimal number 
   {"\\(", TK_LP},       // left parenthesis
   {"\\)", TK_RP},       // right parenthesis
@@ -133,9 +133,22 @@ uint32_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+  *success = true;
   /* TODO: Insert codes to evaluate the expression. */
   TODO();
 
   return 0;
+}
+
+void expr_test(void){
+  bool success;
+  char exp1[20] = "0x75aF + 124";
+  expr(exp1, &success);
+  Assert(success, "error1\n");
+  char exp2[20] = "66afa + 13";
+  expr(exp2, &success);
+  Assert(success, "error2\n");
+  char exp3[50] = "(381 / 0x220 *   23) == (0x7a - 124)";
+  expr(exp3, &success);
+  Assert(success, "error3\n");
 }
