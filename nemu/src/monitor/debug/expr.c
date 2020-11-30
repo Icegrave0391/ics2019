@@ -150,7 +150,7 @@ void expr_test(void){
   Assert(success, "error1\n");
   char exp2[20] = "66afa + 13";
   expr(exp2, &success);
-  Assert(success, "error2\n");
+  Assert(!success, "error2\n");
   char exp3[50] = "(381 / 0x220 *   23) == (0x7a - 124)";
   expr(exp3, &success);
   Assert(success, "error3\n");
