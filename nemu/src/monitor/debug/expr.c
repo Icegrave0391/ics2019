@@ -29,8 +29,8 @@ static struct rule {
   {"\\-", '-'},         // sub
   {"\\*", '*'},         // times
   {"\\/", '/'},         // divide
-  {"0[Xx][\da-fA-F]+", TK_HEX},    // hex number
-  {"[\\d]+", TK_DECI},  // decimal number 
+  {"0[Xx][0-9a-fA-F]+", TK_HEX},    // hex number
+  {"[0-9]+", TK_DECI},  // decimal number 
   {"\\(", TK_LP},       // left parenthesis
   {"\\)", TK_RP},       // right parenthesis
 };
