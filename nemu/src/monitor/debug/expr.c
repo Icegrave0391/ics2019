@@ -137,6 +137,7 @@ static bool make_token(char *e) {
             nr_token += 1;
             break;
           case TK_REG:  //$REG_NAME -> REG_NAME -> reg_name (lower)
+            tokens[nr_token].type = rules[i].token_type;
             strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
             for(int i = 0; i < substr_len -1; i++){
               if(tokens[nr_token].str[i] >= 'A' && tokens[nr_token].str[i] <= 'Z'){
