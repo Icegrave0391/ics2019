@@ -318,7 +318,7 @@ void expr_test(void){
   Assert(success, "error1\n");
   Log("result1: %d\n", res);
 
-  char exp2[20] = "66afa + 13";
+  char exp2[20] = "66 + 13";
   res = expr(exp2, &success);
   Assert(!success, "error2\n");
   Log("res2: %d\n", res);
