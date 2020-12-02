@@ -8,6 +8,8 @@
 
 void expr_test(void);
 uint32_t eval(int p, int q, bool *success);
+uint32_t isa_reg_str2val(const char *s, bool *success);
+
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
   /* TODO: Add more token types */
