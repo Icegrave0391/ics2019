@@ -9,6 +9,7 @@
 void expr_test(void);
 uint32_t eval(int p, int q, bool *success);
 uint32_t isa_reg_str2val(const char *s, bool *success);
+void reset_tokens();
 
 enum {
   TK_NOTYPE = 256, TK_EQ, TK_NEQ,
@@ -76,13 +77,19 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+void reset_tokens(){
+  for(int i = 0; i < 32; i++){
+    memset(tokens + i, 0, sizeof(Token));
+  }
+}
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
 
   nr_token = 0;
-
+  reset_tokens();
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
