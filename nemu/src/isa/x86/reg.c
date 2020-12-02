@@ -51,5 +51,31 @@ void isa_reg_display() {
 }
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
+  int width = 0;
+  int num_regs = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]);
+  if (strlen(s) == 3){  // 32-bit register
+    width = 4;
+  }
+  else if (strlen(s) == 2){
+    width = 2;
+    if (s[1] == 'H' || s[1] == 'h' || s[1] == 'L' || s[1] == 'l')
+    {
+      width = 1;
+    }
+  }
+
+  for(int i = 0; i < num_regs; i++){
+    if (strcmp(reg_name(i, width), s) == 0){
+      if (width == 4){
+        return reg_l(i);
+      }
+      else if (width == 2){
+        return reg_w(i);
+      }
+      else if (width == 1){
+        return reg_b(i);
+      }
+    }
+  }
   return 0;
 }

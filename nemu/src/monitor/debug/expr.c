@@ -7,11 +7,14 @@
 #include <regex.h>
 
 void expr_test(void);
+uint32_t eval(int p, int q, bool *success);
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, TK_EQ, TK_NEQ,
   /* TODO: Add more token types */
   TK_HEX, TK_DECI,
   TK_LP, TK_RP,
+  TK_REG,
+  TK_AND,
 };
 
 static struct rule {
@@ -29,10 +32,14 @@ static struct rule {
   {"\\-", '-'},         // sub
   {"\\*", '*'},         // times
   {"\\/", '/'},         // divide
+  {"!=", TK_NEQ},       // not equal
+  {"&&", TK_AND},       // and
   {"0[Xx][0-9a-fA-F]+", TK_HEX},    // hex number
   {"[0-9]+", TK_DECI},  // decimal number 
   {"\\(", TK_LP},       // left parenthesis
   {"\\)", TK_RP},       // right parenthesis
+  {"\\$[a-zA-Z]{2,3}", TK_REG}
+  
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -54,6 +61,8 @@ void init_regex() {
     }
   }
 
+
+  // TODO: comment this
   expr_test();
 }
 
@@ -135,23 +144,181 @@ uint32_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  *success = true;
-  return 0;
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  uint32_t res = eval(0, nr_token - 1, success);
+  return res;
+}
 
+/* A function to determine if the whole expression is in a parenthese */
+bool check_parentheses(int p, int q){
+  if(tokens[p].type != TK_LP || tokens[q].type != TK_RP){
+    return false;
+  }
+  int flg = 0;
+  for (int i = p+1; i <= q-1; i++){
+    if(tokens[i].type == TK_LP){
+      flg += 1;
+    }
+    else if(tokens[i].type == TK_RP){
+      flg -= 1;
+    }
+    if(flg < 0){
+      return false;
+    }
+  }
+  if(flg == 0){
+    return true;
+  }
+  return false;
+}
+
+/* evaluate the operator priority for token */
+int get_token_priority(int token_type){
+  // none-operator tokens
+  if (token_type == TK_NOTYPE || token_type == TK_REG || token_type == TK_HEX ||
+  token_type == TK_DECI){
+    return 0;
+  }
+  if (token_type == TK_AND){
+    return 1;
+  }
+  if (token_type == TK_EQ || token_type == TK_NEQ){
+    return 2;
+  }
+  if (token_type == '+' || token_type == '-'){
+    return 3;
+  }
+  if (token_type == '*' || token_type == '/'){
+    return 4;
+  }
+  if (token_type == TK_LP || token_type == TK_RP){
+    return 5;
+  }
   return 0;
 }
 
+/* A function to find the main_operator in a expression*/
+int find_main_op(int p, int q){
+  // initialization
+  int cur_prior = 99;
+  int main_loc = p;
+  int in_paren = 0;
+  // iterate
+  for (int i = p; i <= q; i++){
+    if(tokens[i].type == TK_LP){
+      in_paren += 1;
+    }
+    else if(tokens[i].type == TK_RP){
+      in_paren -= 1;
+    }
+    if(in_paren) continue;
+
+    int tok_prior = get_token_priority(tokens[i].type);
+    if(tok_prior <= cur_prior && tok_prior){
+      cur_prior = tok_prior;
+      main_loc = i;
+    }
+  }
+  return main_loc;
+}
+
+
+/* Handler for the bad cases during expression evaluation.
+ * Just update success -> false and return 0.
+ */
+uint32_t fail_handler(int p, int q, bool *success){
+  *success = false;
+  /* bad expression */
+  if (p > q){
+    printf("Bad expression for location (%d, %d)\n", p, q);
+    Token bad_t = tokens[p];
+    if (bad_t.type == TK_HEX || bad_t.type == TK_DECI || bad_t.type == TK_REG){
+      printf("\t->Bad token val: %s\n", bad_t.str);
+    }
+  }
+  /* single token */
+  if (p == q){
+    printf("Bad single token for location %d\n", p);
+  }
+  return 0;
+}
+
+/* Eval the sub_expression from location p(start) to q(end) 
+ * The result of the expression(if succeeded) will be returned.
+ * :param *success: to store if the evaluation is successful.
+ */
+uint32_t eval(int p, int q, bool *success){
+  if (p > q){
+    /* Bad expression */
+    return fail_handler(p, q, success);
+  }
+  else if (p == q){
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    Token single_t = tokens[p];
+    uint32_t num_val = 0;
+    if (single_t.type == TK_HEX){  // hex value
+      sscanf(single_t.str, "%x", &num_val);
+    }
+    else if (single_t.type == TK_DECI){ // decimal value
+      sscanf(single_t.str, "%d", &num_val);
+    }
+    else if (single_t.type == TK_REG){
+      num_val = isa_reg_str2val(single_t.str, success);
+    }
+    else {
+      return fail_handler(p, q, success);
+    }
+    return num_val;
+  }
+  else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1, success);
+  }
+  else{
+    /* Find main operator (operator with the lowest priority) */
+    int main_op_loc = find_main_op(p, q);
+    uint32_t val1 = eval(p, main_op_loc - 1, success);
+    uint32_t val2 = eval(main_op_loc + 1, q, success);
+    switch (tokens[main_op_loc].type){
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/':
+        if(!val2){
+          *success = false;
+          return 0;
+        }
+        return val1 / val2;
+      case TK_EQ: return val1 == val2;
+      case TK_NEQ: return val1 != val2;
+      case TK_AND: return val1 && val2;
+      default: assert(0);
+    }
+  }
+}
+
+
+
+/* JUST FOR TEST */
 void expr_test(void){
   bool success;
+  uint32_t res;
   char exp1[20] = "0x75aF + 124";
-  expr(exp1, &success);
+  res =  expr(exp1, &success);
   Assert(success, "error1\n");
+  Log("result1: %d\n", res);
+
   char exp2[20] = "66afa + 13";
-  expr(exp2, &success);
+  res = expr(exp2, &success);
   Assert(!success, "error2\n");
+  Log("res2: %d\n", res);
+
   char exp3[50] = "(381 / 0x220 *   23) == (0x7a - 124)";
-  expr(exp3, &success);
+  res = expr(exp3, &success);
   Assert(success, "error3\n");
+  Log("res3: %d\n", res);
 }
