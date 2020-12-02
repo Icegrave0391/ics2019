@@ -231,10 +231,10 @@ int get_token_priority(int token_type){
     return 4;
   }
   if (token_type == TK_LP || token_type == TK_RP){
-    return 5;
+    return 6;
   }
   if (token_type == TK_POINTER || token_type == TK_NEG){
-    return 6;
+    return 5;
   }
   return 0;
 }
