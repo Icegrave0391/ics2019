@@ -320,7 +320,7 @@ void expr_test(void){
 
   char exp2[20] = "66 + 13";
   res = expr(exp2, &success);
-  Assert(!success, "error2\n");
+  Assert(success, "error2\n");
   Log("res2: %d\n", res);
 
   char exp3[50] = "(381 / 0x220 *   23) == (0x7a - 124)";
