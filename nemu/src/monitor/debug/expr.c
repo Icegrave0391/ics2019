@@ -143,6 +143,8 @@ static bool make_token(char *e) {
                 tokens[nr_token].str[i] += 'a' - 'A';
               }
             }
+            nr_token += 1;
+            break;
         }
 
         break;
