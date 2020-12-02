@@ -129,6 +129,13 @@ static bool make_token(char *e) {
             tokens[nr_token].type = rules[i].token_type;
             nr_token += 1;
             break;
+          case TK_REG:  //$REG_NAME -> REG_NAME -> reg_name (lower)
+            strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
+            for(int i = 0; i < substr_len -1; i++){
+              if(tokens[nr_token].str[i] >= 'A' && tokens[nr_token].str[i] <= 'Z'){
+                tokens[nr_token].str[i] += 'a' - 'A';
+              }
+            }
         }
 
         break;
@@ -327,4 +334,9 @@ void expr_test(void){
   res = expr(exp3, &success);
   Assert(success, "error3\n");
   Log("res3: %d\n", res);
+
+  char exp4[50] = "$eax + 0x1";
+  res = expr(exp4, &success);
+  Assert(success, "error4\n");
+  Log("res4: %d\n", res);
 }
