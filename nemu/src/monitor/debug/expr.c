@@ -385,7 +385,7 @@ void expr_test(void){
   Assert(success, "error5\n");
   Log("res5: %d\n", res);
 
-  char exp6[50] = "*(0x80100000 + 0x4)";
+  char exp6[50] = "*(0x00100000 + 0x4)";
   res = expr(exp6, &success);
   Assert(success, "error6\n");
   Log("res6: %d\n", res); 
