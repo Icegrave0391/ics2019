@@ -89,7 +89,7 @@ static bool make_token(char *e) {
   regmatch_t pmatch;
 
   nr_token = 0;
-  reset_tokens();
+  reset_tokens();   // tricky: convenient for debug
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
