@@ -305,7 +305,7 @@ uint32_t eval(int p, int q, bool *success){
 
 /* JUST FOR TEST */
 void expr_test(void){
-  bool success;
+  bool success=true;
   uint32_t res;
   char exp1[20] = "0x75aF + 124";
   res =  expr(exp1, &success);
