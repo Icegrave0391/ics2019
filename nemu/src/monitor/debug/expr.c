@@ -18,6 +18,7 @@ enum {
   TK_LP, TK_RP,
   TK_REG,
   TK_AND,
+  TK_POINTER, TK_NEG,
 };
 
 static struct rule {
@@ -114,6 +115,10 @@ static bool make_token(char *e) {
           printf("Token number exceeded.\n");
           return false;
         }        
+        int last_tp = 0;
+        if (nr_token){
+          last_tp = tokens[nr_token - 1].type;
+        }
 
         switch (rules[i].token_type) {
           case TK_NOTYPE:
@@ -128,6 +133,18 @@ static bool make_token(char *e) {
           case TK_NEQ:
           case TK_AND:
             tokens[nr_token].type = rules[i].token_type;
+            if(rules[i].token_type == '-'){
+              // determine whether sub_operator or negative
+              if (!nr_token || (last_tp != TK_DECI && last_tp != TK_HEX && last_tp != TK_REG && last_tp != TK_RP)){
+                  tokens[nr_token].type = TK_NEG;
+                } 
+            }
+            else if(rules[i].token_type == '*'){
+              // determine whether multi_operator or pointer
+              if (!nr_token || (last_tp != TK_DECI && last_tp != TK_HEX && last_tp != TK_REG && last_tp != TK_RP)){
+                  tokens[nr_token].type = TK_POINTER;
+                } 
+            }
             nr_token += 1;
             break;
           case TK_HEX:
@@ -213,7 +230,7 @@ int get_token_priority(int token_type){
   if (token_type == '*' || token_type == '/'){
     return 4;
   }
-  if (token_type == TK_LP || token_type == TK_RP){
+  if (token_type == TK_LP || token_type == TK_RP || token_type == TK_POINTER || token_type == TK_NEG){
     return 5;
   }
   return 0;
@@ -304,6 +321,16 @@ uint32_t eval(int p, int q, bool *success){
   else{
     /* Find main operator (operator with the lowest priority) */
     int main_op_loc = find_main_op(p, q);
+
+    /* case unary operation (negative or pointer) */
+    if (tokens[main_op_loc].type == TK_NEG){
+      return -eval(main_op_loc + 1, q, success);
+    }
+    if (tokens[main_op_loc].type == TK_POINTER){
+      return vaddr_read(eval(main_op_loc + 1, q, success), 4);
+    }
+
+    /* case binary operation */
     uint32_t val1 = eval(p, main_op_loc - 1, success);
     uint32_t val2 = eval(main_op_loc + 1, q, success);
     switch (tokens[main_op_loc].type){
@@ -349,4 +376,14 @@ void expr_test(void){
   res = expr(exp4, &success);
   Assert(success, "error4\n");
   Log("res4: %d\n", res);
+  
+  char exp5[50] = "52 + -2";
+  res = expr(exp5, &success);
+  Assert(success, "error5\n");
+  Log("res5: %d\n", res);
+
+  char exp6[50] = "*(0x80100000 + 0x4)";
+  res = expr(exp6, &success);
+  Assert(success, "error6\n");
+  Log("res6: %d\n", res); 
 }
