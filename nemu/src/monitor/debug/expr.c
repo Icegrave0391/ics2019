@@ -117,6 +117,9 @@ static bool make_token(char *e) {
           case '/':
           case TK_LP:
           case TK_RP:
+          case TK_EQ:
+          case TK_NEQ:
+          case TK_AND:
             tokens[nr_token].type = rules[i].token_type;
             nr_token += 1;
             break;
@@ -146,6 +149,7 @@ uint32_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
+
   uint32_t res = eval(0, nr_token - 1, success);
   return res;
 }
