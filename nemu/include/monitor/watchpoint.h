@@ -13,4 +13,7 @@ typedef struct watchpoint {
   bool trig;
 } WP;
 
+int polling_activated_wp();
+void description_wp();
+void delete_wp(int num);
 #endif
