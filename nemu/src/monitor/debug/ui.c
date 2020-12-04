@@ -117,7 +117,7 @@ static int cmd_x(char *args){
   char exp[50];
   paddr_t addr;
   // TODO: only hex number for expr
-  sscanf(args, "%d %u", &n, &addr);
+  sscanf(args, "%d %x", &n, &addr);
   // uint32_t addr = expr(exp, &success);
   if (!(n > 0 && success)){
     printf("Usage: x <num> <expression (valid expr)>\n");
