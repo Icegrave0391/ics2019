@@ -43,6 +43,7 @@ static int cmd_info(char *args);
 static int cmd_si(char *args);
 static int cmd_x(char *args);
 static int cmd_watch(char *args);
+static int cmd_d(char *args);
 static struct {
   char *name;
   char *description;
@@ -53,8 +54,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "info", "Print the program state (info r: registers) and (info w: watchpoints)", cmd_info },
   { "si", "Step over the program by n steps", cmd_si },
-  { "x", "Scan n memory units from addr[expr] (x N expr)", cmd_x },
-  { "watch", "Set a watchpoint to an expression (x expr)", cmd_watch},
+  { "x", "Scan n memory units from addr[expr] (x <N> <expr>)", cmd_x },
+  { "watch", "Set a watchpoint to an expression (x <expr>)", cmd_watch},
+  { "d", "Delete a watchpoint (d <NUMBER>)\n", cmd_d},
   /* TODO: Add more commands */
 };
 
@@ -142,6 +144,18 @@ static int cmd_watch(char *args){
   uint32_t val = expr(exp, &success);
   Assert(success, "Invaild expression %s.\n", exp);
   new_wp(exp, val);
+  return 0;
+}
+
+static int cmd_d(char *args){
+  int num = 0;
+  int succ = sscanf(args, "%d", &num);
+  if (!succ){
+    printf("Usage: d <num>.\n");
+    printf("<num> has to be a correct integer value(0-31) to represent wp.\n");
+    return 0;
+  }
+  delete_wp(num);
   return 0;
 }
 

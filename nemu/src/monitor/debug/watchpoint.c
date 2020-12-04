@@ -89,7 +89,7 @@ void description_wp(){
   printf("Num       Expr      Value\n");
   WP * p = head;
   while(p){
-    printf("%-10d%-10s%08x(%u)\n",p->NO, p->wp_expr, p->wp_value, p->wp_value);
+    printf("%-10d%-10s0x%08x(%u)\n",p->NO, p->wp_expr, p->wp_value, p->wp_value);
     p = p->next;
   }
   return;
