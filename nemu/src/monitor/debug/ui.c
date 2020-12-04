@@ -141,7 +141,7 @@ static int cmd_watch(char *args){
   sscanf(args, "%s", exp);
   uint32_t val = expr(exp, &success);
   Assert(success, "Invaild expression %s.\n", exp);
-  WP *p = new_wp(exp, val);
+  new_wp(exp, val);
 }
 
 void ui_mainloop(int is_batch_mode) {
