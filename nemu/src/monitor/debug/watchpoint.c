@@ -81,6 +81,30 @@ int polling_activated_wp(){
 
 void description_wp(){
   if(!head){
-
+    printf("No watchpoints.\n");
+    return;
   }
+  printf("Num       Expr      Value\n");
+  WP * p = head;
+  while(p->next){
+    print("%-10d%-10s%08x(%u)\n",p->NO, p->wp_expr, p->wp_value, p->wp_value);
+    p = p->next;
+  }
+  return;
+}
+
+void delete_wp(int num){
+  if(!head){
+    printf("No watchpoint to delete.\n");
+    return;
+  }
+  WP *p = head;
+  while(p){
+    if(p->NO == num){
+      free_wp(p);
+    }
+    p = p->next;
+  }
+  print("Didn't find watchpoint %d.\n", num);
+  return;
 }

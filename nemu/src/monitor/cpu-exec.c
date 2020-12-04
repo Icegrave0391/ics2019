@@ -61,7 +61,13 @@ void cpu_exec(uint64_t n) {
   log_clearbuf();
 
     /* TODO: check watchpoints here. */
-
+    int changed = 0;
+    changed = polling_activated_wp();
+    if(changed){
+      nemu_state.state = NEMU_STOP;
+      printf("Input your command here.\n");
+      return;
+    }
 #endif
 
   g_nr_guest_instr ++;

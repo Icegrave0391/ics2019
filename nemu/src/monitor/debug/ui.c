@@ -8,6 +8,7 @@
 
 void isa_reg_display();
 void cpu_exec(uint64_t);
+uint32_t expr(char *e, bool *success);
 uint32_t paddr_read(paddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -112,11 +113,13 @@ static int cmd_si(char *args){
 
 static int cmd_x(char *args){
   int n = 0;
-  paddr_t addr = 0;
+  bool success = true;
+  char exp[50];
   // TODO: only hex number for expr
-  sscanf(args, "%d %x", &n, &addr);
-  if (!(n > 0 && addr)){
-    printf("Usage: x <num> <addr(hex)>\n");
+  sscanf(args, "%d %s", &n, exp);
+  uint32_t addr = expr(exp, &success);
+  if (!(n > 0 && success)){
+    printf("Usage: x <num> <expression (valid expr)>\n");
     return 0;
   }
   for(int i = 0; i < n; i++){
