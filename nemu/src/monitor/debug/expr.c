@@ -181,9 +181,7 @@ uint32_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
-  uint32_t res = eval(0, nr_token - 1, success);
-  return res;
+  return eval(0, nr_token - 1, success);
 }
 
 /* A function to determine if the whole expression is in a parenthese */

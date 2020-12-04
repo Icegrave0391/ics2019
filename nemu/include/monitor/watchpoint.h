@@ -8,8 +8,9 @@ typedef struct watchpoint {
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
-
-
+  char wp_expr[50];   // expression
+  uint32_t wp_value;  // value calculated
+  bool trig;
 } WP;
 
 #endif
