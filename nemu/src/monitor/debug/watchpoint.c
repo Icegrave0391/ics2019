@@ -58,12 +58,13 @@ void free_wp(WP* wp){
   printf("[free_wp failed] WP %d is not in head list.\n", wp->NO);
 }
 
+/* Polling each watchpoint in the activated list (head list) */
 int polling_activated_wp(){
   int num_trig = 0;
   WP * p = head;
   while(p){
     bool success = true;
-    uint32_t new_val = expr(p->wp_expr, success);
+    uint32_t new_val = expr(p->wp_expr, &success);
     Assert(success, "[expr error]Wrong expression: %s for watchpoint %d", p->wp_expr, p->NO);
     if (new_val != p->wp_value){
       printf("Hardware watchpoint %d: %s\n", p->NO, p->wp_expr);
@@ -71,6 +72,15 @@ int polling_activated_wp(){
       printf("New value = 0x%08x(%u)\n", new_val, new_val);
       num_trig += 1;
       // update wp
+      p -> wp_value = new_val;
     }
+    p = p -> next;
+  }
+  return num_trig;
+}
+
+void description_wp(){
+  if(!head){
+
   }
 }
