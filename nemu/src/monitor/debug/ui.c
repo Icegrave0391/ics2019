@@ -42,6 +42,7 @@ static int cmd_help(char *args);
 static int cmd_info(char *args);
 static int cmd_si(char *args);
 static int cmd_x(char *args);
+static int cmd_watch(char *args);
 static struct {
   char *name;
   char *description;
@@ -50,9 +51,10 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-  { "info", "Print the program state (r: registers) and (w: watchpoints)", cmd_info },
+  { "info", "Print the program state (info r: registers) and (info w: watchpoints)", cmd_info },
   { "si", "Step over the program by n steps", cmd_si },
   { "x", "Scan n memory units from addr[expr] (x N expr)", cmd_x },
+  { "watch", "Set a watchpoint to an expression (x expr)", cmd_watch},
   /* TODO: Add more commands */
 };
 
@@ -90,7 +92,7 @@ static int cmd_info(char *args){
     isa_reg_display();
   }
   else if (strcmp(arg, "w") == 0){
-
+    description_wp();
   }
   return 0;
 }
@@ -115,7 +117,6 @@ static int cmd_x(char *args){
   int n = 0;
   bool success = true;
   char exp[50];
-  // TODO: only hex number for expr
   sscanf(args, "%d %s", &n, exp);
   paddr_t addr = expr(exp, &success);
   if (!(n > 0 && success)){
@@ -132,6 +133,15 @@ static int cmd_x(char *args){
     printf("(0x%08x)\n", paddr_read(base, 4));
   }
   return 0;
+}
+
+static int cmd_watch(char *args){
+  bool success = true;
+  char exp[50];
+  sscanf(args, "%s", exp);
+  uint32_t val = expr(exp, &success);
+  Assert(success, "Invaild expression %s.\n", exp);
+  WP *p = new_wp(exp, val);
 }
 
 void ui_mainloop(int is_batch_mode) {

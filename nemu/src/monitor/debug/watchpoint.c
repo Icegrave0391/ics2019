@@ -20,7 +20,7 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 /* Initialize a new watchpoint (update `head` pointer) */
-WP * new_wp(){
+WP * new_wp(char *exp, uint32_t val){
   if(!free_){
     printf("[new_wp failed] wp_pool used up.\n");
     assert(0);
@@ -32,6 +32,8 @@ WP * new_wp(){
   // update head
   new -> next = head;
   head = new;
+  strcpy(new->wp_expr, exp);
+  new->wp_value = val;
   return new;
 }
 
