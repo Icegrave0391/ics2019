@@ -142,6 +142,7 @@ static int cmd_watch(char *args){
   uint32_t val = expr(exp, &success);
   Assert(success, "Invaild expression %s.\n", exp);
   new_wp(exp, val);
+  return 0;
 }
 
 void ui_mainloop(int is_batch_mode) {
