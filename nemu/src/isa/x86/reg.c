@@ -53,6 +53,9 @@ void isa_reg_display() {
 uint32_t isa_reg_str2val(const char *s, bool *success) {
   int width = 0;
   int num_regs = sizeof(cpu.gpr) / sizeof(cpu.gpr[0]);
+  if (strcmp(s, "pc") == 0){
+    return cpu.pc;
+  }
   if (strlen(s) == 3){  // 32-bit register
     width = 4;
   }

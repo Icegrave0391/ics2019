@@ -107,6 +107,5 @@ void delete_wp(int num){
     }
     p = p->next;
   }
-  printf("Didn't find watchpoint %d.\n", num);
   return;
 }
