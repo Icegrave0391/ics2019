@@ -6,27 +6,79 @@ make_EHelper(mov) {
 }
 
 make_EHelper(push) {
-  TODO();
-
-  print_asm_template1(push);
+	//TODO();
+	/*
+	(* StackAddrSize = 32 *)
+   IF OperandSize = 16
+   THEN
+      ESP := ESP - 2;
+      (SS:ESP) := (SOURCE); (* word assignment *)
+   ELSE
+      ESP := ESP - 4;
+      (SS:ESP) := (SOURCE); (* dword assignment *)
+   FI;
+	FI;
+	*/
+	rtl_push(&id_dest->val);
+	print_asm_template1(push);
 }
 
 make_EHelper(pop) {
-  TODO();
-
-  print_asm_template1(pop);
+  //TODO();
+	/*
+	(* StackAddrSize = 32 * )
+   IF OperandSize = 16
+   THEN
+      DEST := (SS:ESP); (* copy a word *)
+      ESP := ESP + 2;
+   ELSE (* OperandSize = 32 *)
+      DEST := (SS:ESP); (* copy a dword *)
+      ESP := ESP + 4;
+   FI;
+	FI;
+	*/
+	rtl_pop(&s0);
+	id_dest->val = s0;
+	operand_write(id_dest, &s0);
+	print_asm_template1(pop);
 }
 
 make_EHelper(pusha) {
-  TODO();
-
-  print_asm("pusha");
+  // TODO();
+	/*
+	 Temp := (ESP);
+   Push(EAX);
+   Push(ECX);
+   Push(EDX);
+   Push(EBX);
+   Push(Temp);
+   Push(EBP);
+   Push(ESI);
+   Push(EDI);
+	*/
+	s0 = reg_l(R_ESP);
+	rtl_push(&reg_l(R_EAX));
+	rtl_push(&reg_l(R_ECX));
+	rtl_push(&reg_l(R_EDX));
+	rtl_push(&reg_l(R_EBX));
+	rtl_push(&reg_l(s0));
+	rtl_push(&reg_l(R_EBP));
+	rtl_push(&reg_l(R_ESI));
+	rtl_push(&reg_l(R_EDI));
+	print_asm("pusha");
 }
 
 make_EHelper(popa) {
-  TODO();
-
-  print_asm("popa");
+  // TODO();
+	rtl_pop(&reg_l(R_EDI));
+	rtl_pop(&reg_l(R_ESI));
+	rtl_pop(&reg_l(R_EBP));
+	reg_l(R_ESP) += 4; //  Skip esp
+	rtl_pop(&reg_l(R_EBX));
+	rtl_pop(&reg_l(R_EDX));
+	rtl_pop(&reg_l(R_ECX));
+	rtl_pop(&reg_l(R_EAX));
+	print_asm("popa");
 }
 
 make_EHelper(leave) {

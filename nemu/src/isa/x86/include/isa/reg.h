@@ -24,6 +24,7 @@ typedef struct {
    */
 
   /* PA1: RTFSC */
+	/* general registers */
   union {
     union {
       uint32_t _32;
@@ -34,8 +35,60 @@ typedef struct {
       rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
     };
   };
+	/* pc(eip) */
   vaddr_t pc;
+	/* flags registers */
+	/*
+	                                              16-BIT FLAGS REGISTER
+                                                         A
+                                     +-------------------+---------------+
+  31                  23                  15               7            0
+ +-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                                   |V|R| |N| IO|O|D|I|T|S|Z| |A| |P| |C|
+ | 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | | |0| |   | | | | | | |0| |0| |1| |
+ |                                   |M|F| |T| PL|F|F|F|F|F|F| |F| |F| |F|
+ +-------------------+---------------+++++-+++-+-+++++++++++++-+++-+++-+++
+                                      | |   |  |  | | | | | |   |   |   |
+       VIRTUAL 8086 MODE---X----------+ |   |  |  | | | | | |   |   |   |
+             RESUME FLAG---X------------+   |  |  | | | | | |   |   |   |
+        NESTED TASK FLAG---X----------------+  |  | | | | | |   |   |   |
+     I/O PRIVILEGE LEVEL---X-------------------+  | | | | | |   |   |   |
+                OVERFLOW---S----------------------+ | | | | |   |   |   |
+          DIRECTION FLAG---C------------------------+ | | | |   |   |   |
+        INTERRUPT ENABLE---X--------------------------+ | | |   |   |   |
+               TRAP FLAG---S----------------------------+ | |   |   |   |
+               SIGN FLAG---S------------------------------+ |   |   |   |
+               ZERO FLAG---S--------------------------------+   |   |   |
+         AUXILIARY CARRY---S------------------------------------+   |   |
+             PARITY FLAG---S----------------------------------------+   |
+              CARRY FLAG---S--------------------------------------------+
 
+          S = STATUS FLAG, C = CONTROL FLAG, X = SYSTEM FLAG
+
+          NOTE: 0 OR 1 INDICATES INTEL RESERVED. DO NOT DEFINE
+	*/
+	union{
+		struct{
+			uint32_t CF: 1;
+			uint32_t: 1;
+			uint32_t PF: 1;
+			uint32_t: 1;
+			uint32_t AF: 1;
+			uint32_t: 1;
+			uint32_t ZF: 1;
+			uint32_t SF: 1;
+			uint32_t TF: 1;
+			uint32_t IF: 1;
+			uint32_t DF: 1;
+			uint32_t OF: 1;
+			uint32_t IOPL: 2;
+			uint32_t NT: 1;
+			uint32_t: 1;
+			uint32_t RF: 1;
+			uint32_t VM: 1;
+		};
+		rtlreg_t eflags_32;
+	} eflags;
 } CPU_state;
 
 static inline int check_reg_index(int index) {
@@ -47,12 +100,13 @@ static inline int check_reg_index(int index) {
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
 
+#define reg_ef(f) (cpu.eflags.f)
+
 static inline const char* reg_name(int index, int width) {
   extern const char* regsl[];
   extern const char* regsw[];
   extern const char* regsb[];
   assert(index >= 0 && index < 8);
-
   switch (width) {
     case 4: return regsl[index];
     case 1: return regsb[index];

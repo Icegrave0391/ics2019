@@ -1,39 +1,116 @@
 #include "cpu/exec.h"
 
 make_EHelper(add) {
-  TODO();
+  // TODO();
+	/*
+	Description
+	ADD performs an integer addition of the two operands (DEST and SRC).
+	The result of the addition is assigned to the first operand (DEST), and the flags are set accordingly.
+	When an immediate byte is added to a word or doubleword operand,
+	the immediate value is sign-extended to the size of the word or doubleword operand.
+	*/
+	rtl_add(&s0, &id_dest->val, &id_src->val);
+	/* Should cut off to the operators' width, however, it's marked in id_dest->width,
+	 * so we wouldn't take care of that
+	 */
+	// update eflags
+	rtl_update_ZFSF(&s0, id_dest->width);
+	rtl_is_add_carry(&s1, &s0, &id_dest->val);
+	rtl_set_CF(&s1);
+	rtl_is_add_overflow(&s1, &s0, &id_dest->val, &id_src->val, id_dest->width);
+	rtl_set_OF(&s1);
 
+	operand_write(id_dest, &s0);
   print_asm_template2(add);
 }
 
 make_EHelper(sub) {
-  TODO();
+  // TODO();
+	// same as add
+	rtl_sub(&s0, &id_dest->val, &id_src->val);
 
+	rtl_update_ZFSF(&s0, id_dest->width);
+	rtl_is_sub_carry(&s1, &s0, &id_dest->val);
+	rtl_set_CF(&s1);
+	rtl_is_sub_overflow(&s1, &s0, &id_dest->val, &id_src->val, id_dest->width);
+	rtl_set_OF(&s1);
+
+	operand_write(id_dest, &s0);
   print_asm_template2(sub);
 }
 
 make_EHelper(cmp) {
-  TODO();
+  // TODO();
+	/*
+	Operation
+	LeftSRC - SignExtend(RightSRC);
+	(* CMP does not store a result; its purpose is to set the flags *)
+	*/
+	rtl_sub(&s0, &id_dest->val, &id_src->val);
 
-  print_asm_template2(cmp);
+	rtl_update_ZFSF(&s0, id_dest->width);
+	rtl_is_sub_carry(&s1, &s0, &id_dest->val);
+	rtl_set_CF(&s1);
+	rtl_is_sub_overflow(&s1, &s0, &id_dest->val, &id_src->val, id_dest->width);
+	rtl_set_OF(&s1);
+	/* don't need to store a result, just set flags */
+	print_asm_template2(cmp);
 }
 
 make_EHelper(inc) {
-  TODO();
+  // TODO();
+	s0 = 1;
+	rtl_add(&s0, &s0, &id_dest->val);
+	/* s0 <- the result of addition */
+	rtl_update_ZFSF(&s0, id_dest->width);
+	// rtl_is_add_carry(&s1, &s0, &id_dest->val);
+	// rtl_set_CF(&s1);
+	s1 = 1;
+	rtl_is_add_overflow(&s1, &s0, &id_dest->val, &s1, id_dest->width);
+	rtl_set_OF(&s1);
 
+	operand_write(id_dest, &s0);
   print_asm_template1(inc);
 }
 
 make_EHelper(dec) {
-  TODO();
+  // TODO();
+	/*
+	Flags Affected
+	OF, SF, ZF, AF, and PF as described in Appendix C
+	(CF undefined)
+	*/
+	s0 = 1;
+	rtl_sub(&s0, &id_dest->val, &s0);
 
-  print_asm_template1(dec);
+	rtl_update_ZFSF(&s0, id_dest->width);
+	// rtl_is_sub_carry(&s1, &s0, &id_dest->val);
+	// rtl_set_CF(&s1);
+	s1 = 1;
+	rtl_is_sub_overflow(&s1, &s0, &id_dest->val, &s1, id_dest->width);
+	rtl_set_OF(&s1);
+
+	operand_write(id_dest, &s0);
+	print_asm_template1(dec);
 }
 
 make_EHelper(neg) {
-  TODO();
+  // TODO();
+	/*
+	IF r/m = 0 THEN CF := 0 ELSE CF := 1; FI;
+	r/m := - r/m;
+	*/
+	s0 = id_dest->val != 0;
+	rtl_set_CF(&s0);
+	s1 = 0;
+	// r/m val := -r/m val;
+	rtl_sub(&s0, &s1, &id_dest->val);
+	rtl_update_ZFSF(&s0, id_dest->width);
+	rtl_is_sub_overflow(&s1, &s0, &s1, &id_dest->val, id_dest->width);
+	rtl_set_OF(&s1);
 
-  print_asm_template1(neg);
+	operand_write(id_dest, &s0);
+	print_asm_template1(neg);
 }
 
 make_EHelper(adc) {
