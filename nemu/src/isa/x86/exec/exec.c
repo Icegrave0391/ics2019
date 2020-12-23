@@ -36,12 +36,12 @@ make_group(gp1,
 
 	/* 0xfe */
 	make_group(gp4,
-			   EMPTY, EMPTY, EMPTY, EMPTY,
+			   EMPTY, EX(dec), EMPTY, EMPTY,
 			   EMPTY, EMPTY, EMPTY, EMPTY)
 
 	/* 0xff */
 	make_group(gp5,
-			   EX(inc), EMPTY, EX(call_rm), EX(call),
+			   EX(inc), EX(dec), EX(call_rm), EX(call),
 			   EMPTY, EMPTY, EX(push), EMPTY)
 
 	/* 0x0f 0x01*/
