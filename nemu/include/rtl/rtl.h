@@ -137,9 +137,9 @@ static inline void rtl_not(rtlreg_t *dest, const rtlreg_t* src1) {
 
 static inline void rtl_sext(rtlreg_t* dest, const rtlreg_t* src1, int width) {
   // dest <- signext(src1[(width * 8 - 1) .. 0])
-  t0 = *src1;
+  int32_t val = *src1;     /* NOTE: must use int32_t to implement SignExt */
 	size_t rtl_size = sizeof(rtlreg_t);
-	*dest = t0 << (((int)rtl_size - width) * 8) >> (((int)rtl_size - width)*8);
+	*dest = val << (((int)rtl_size - width) * 8) >> (((int)rtl_size - width)*8);
 }
 
 static inline void rtl_setrelopi(uint32_t relop, rtlreg_t *dest,
