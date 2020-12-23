@@ -82,9 +82,23 @@ make_EHelper(popa) {
 }
 
 make_EHelper(leave) {
-  TODO();
-
-  print_asm("leave");
+	/*
+	IF StackAddrSize = 16
+	THEN
+   SP := BP;
+	ELSE (* StackAddrSize = 32 *)
+   ESP := EBP;
+	FI;
+	IF OperandSize = 16
+	THEN
+   BP := Pop();
+	ELSE (* OperandSize = 32 *)
+   EBP := Pop();
+	FI;
+	 */
+	rtl_mv(&reg_l(R_ESP), &reg_l(R_EBP));
+	rtl_pop(&reg_l(R_EBP));
+	print_asm("leave");
 }
 
 make_EHelper(cltd) {
