@@ -47,7 +47,13 @@ void isa_reg_display() {
     int index = check_reg_index(i);
     printf("\t%-3s = 0x%08x (%d)\n", reg_name(index, 4), reg_l(index), reg_l(index));
   }
-  printf("\t pc = 0x%08x (%d)\n", cpu.pc, cpu.pc);
+	// debug: print eflags
+	printf("\tOF = %d\n", reg_ef(OF));
+	printf("\tCF = %d\n", reg_ef(CF));
+	printf("\tZF = %d\n", reg_ef(ZF));
+	printf("\tSF = %d\n", reg_ef(SF));
+
+	printf("\t pc = 0x%08x (%d)\n", cpu.pc, cpu.pc);
 }
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {

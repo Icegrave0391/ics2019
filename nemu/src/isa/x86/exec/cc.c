@@ -17,7 +17,7 @@ void rtl_setcc(rtlreg_t* dest, uint8_t subcode) {
     case CC_O:
 			rtl_get_OF(dest);
 			break;
-		case CC_B:
+		case CC_B:         // Jump near if below (CF=1)
 			rtl_get_CF(dest);
 			break;
     case CC_E:
