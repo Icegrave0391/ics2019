@@ -67,10 +67,6 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 	// 	printf("cpu.SF: 0x%x\tref.SF: 0x%x\n", cpu.eflags.SF, ref_r->eflags.SF);
 	// 	flg = false;
 	// }
-	if (ref_r->eflags.eflags_32 != cpu.eflags.eflags_32)
-	{
-		printf("cpu.eflags: 0x%x\tref_r.eflags: 0x%x\n", cpu.eflags.eflags_32, ref_r->eflags.eflags_32);
-	}
 	return flg;
 }
 
