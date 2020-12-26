@@ -102,22 +102,45 @@ make_EHelper(leave) {
 }
 
 make_EHelper(cltd) {
-  if (decinfo.isa.is_operand_size_16) {
-    TODO();
+	/*
+	IF OperandSize = 16 (* CWD instruction *)
+	THEN
+   IF AX < 0 THEN DX := 0FFFFH; ELSE DX := 0; FI;
+	ELSE (* OperandSize = 32, CDQ instruction *)
+   IF EAX < 0 THEN EDX := 0FFFFFFFFH; ELSE EDX := 0; FI;
+	FI;
+	*/
+	if (decinfo.isa.is_operand_size_16) {
+		// TODO();
+    rtl_sext(&s0, &reg_l(R_EAX), 2);
+		rtl_sari(&s0, &s0, 16);
+		rtl_sr(R_DX, &s0, 2);
   }
   else {
-    TODO();
+    // TODO();
+		rtl_sari(&reg_l(R_EDX), &reg_l(R_EAX), 31);
   }
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cwtl" : "cltd");
 }
 
 make_EHelper(cwtl) {
-  if (decinfo.isa.is_operand_size_16) {
-    TODO();
+	/*
+	IF OperandSize = 16 (* instruction = CBW *)
+	THEN AX := SignExtend(AL);
+	ELSE (* OperandSize = 32, instruction = CWDE *)
+   EAX := SignExtend(AX);
+	FI;
+	*/
+	if (decinfo.isa.is_operand_size_16) {
+    // TODO();
+		rtl_lr(&s0, R_AX, 1);
+		rtl_sext(&s0, &s0, 1);
+		rtl_sr(R_AX, &s0, 1);
   }
   else {
-    TODO();
+    // TODO();
+		rtl_sext(&reg_l(R_EAX), &reg_l(R_EAX), 2);
   }
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cbtw" : "cwtl");
