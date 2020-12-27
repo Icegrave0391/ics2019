@@ -40,11 +40,13 @@ void rtl_setcc(rtlreg_t* dest, uint8_t subcode) {
 			rtl_get_ZF(dest);
 			printf("get zf %u -> dest: %u\n", reg_ef(ZF), *dest);
 			rtl_get_SF(&s0);
+			printf("get sf %u -> s0: %u\n", reg_ef(SF), s0);
 			rtl_get_OF(&s1);
+			printf("get of %u -> s1: %u\n", reg_ef(OF), s1);
 			rtl_xor(&s0, &s0, &s1);
-			printf("sf %u ^ of %u ->s0: %u\n", reg_ef(SF), reg_ef(OF), s0);
+			printf("s0: %u , dest: %u\n", s0, *dest);
 			rtl_or(dest, &s0, dest);
-			printf("dest: %u\n", *dest);
+			printf("-> dest: %u\n", *dest);
 			break;
     default: panic("should not reach here");
     case CC_P: panic("n86 does not have PF");
