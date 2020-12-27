@@ -2,8 +2,8 @@
 #define __COMMON_H__
 
 #define DEBUG
-#define DIFF_TEST
-
+// #define DIFF_TEST
+#define HAS_IOE
 #if _SHARE
 // do not enable these features while building a reference design
 #undef DIFF_TEST
