@@ -37,15 +37,11 @@ void rtl_setcc(rtlreg_t* dest, uint8_t subcode) {
 			rtl_xor(dest, &s0, &s1);
 			break;
     case CC_LE:  // ZF or SF != OF
-			rtl_get_ZF(dest);
-			printf("get zf %u -> dest: %u\n", reg_ef(ZF), *dest);
 			rtl_get_SF(&s0);
-			printf("get sf %u -> s0: %u\n", reg_ef(SF), s0);
 			rtl_get_OF(&s1);
-			printf("get of %u -> s1: %u\n", reg_ef(OF), s1);
 			rtl_xor(&s0, &s0, &s1);
-			printf("s0: %u , dest: %u\n", s0, *dest);
-			rtl_or(dest, &s0, dest);
+			rtl_get_ZF(&s1);
+			rtl_or(dest, &s0, &s1);
 			printf("-> dest: %u\n", *dest);
 			break;
     default: panic("should not reach here");
