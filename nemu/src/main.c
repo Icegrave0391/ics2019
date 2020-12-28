@@ -8,6 +8,5 @@ int main(int argc, char *argv[]) {
 	// is_batch_mode = 0;
   /* Receive commands from user. */
   ui_mainloop(is_batch_mode);
-
   return 0;
 }
