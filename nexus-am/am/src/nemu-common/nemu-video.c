@@ -26,7 +26,7 @@ size_t __am_video_write(uintptr_t reg, void *buf, size_t size) {
 			int x_off = ctl->x, y = ctl->y;
 			for(int i = 0; i < ctl->h; i++){
 				for(int j = 0; j < ctl->w; j++){
-					// if((y + i) > (SCREEN_H - 1) || (x_off + j) > (SCREEN_W - 1))break;
+					if((y + i) > (SCREEN_H - 1) || (x_off + j) > (SCREEN_W - 1))break;
 					fb[(y+i)*SCREEN_W + x_off + j] = pixels[i * ctl->w + j];
 				}
 			}
