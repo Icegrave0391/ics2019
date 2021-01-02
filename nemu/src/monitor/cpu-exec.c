@@ -44,7 +44,7 @@ void cpu_exec(uint64_t n) {
     /* Execute one instruction, including instruction fetch,
      * instruction decode, and the actual execution. */
     __attribute__((unused)) vaddr_t seq_pc = exec_once();
-
+		printf("current pc: 0x%x\n", ori_pc);
 #if defined(DIFF_TEST)
   difftest_step(ori_pc, cpu.pc);
 #endif
@@ -79,7 +79,7 @@ void cpu_exec(uint64_t n) {
 
     if (nemu_state.state != NEMU_RUNNING) break;
 		// debug
-		if(seq_pc == 0x1006da) {
+		if(seq_pc == 0x1006da || ori_pc == 0x1006da) {
 			printf("TRAP!!\n");
 			break;
 		}
