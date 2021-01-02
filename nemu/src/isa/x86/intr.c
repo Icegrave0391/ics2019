@@ -17,6 +17,7 @@ void raise_intr(uint32_t NO, vaddr_t ret_addr) {
    * That is, use ``NO'' to index the IDT.
    */
 	/* 1. push eflags, cs, eip */
+	printf("NO: %d and ret: 0x%x\n", NO, ret_addr);
 	rtl_push(&cpu.eflags.eflags_32);
 	rtl_push(&cpu.cs);
 	rtl_push(&ret_addr);
