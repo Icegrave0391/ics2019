@@ -15,7 +15,7 @@ make_EHelper(lidt) {
 	else{
 		cpu.idtr.base = vaddr_read(id_dest->addr + 2, 4);
 	}
-  print_asm_template1(lidt);
+	print_asm_template1(lidt);
 }
 
 make_EHelper(mov_r2cr) {
@@ -33,11 +33,11 @@ make_EHelper(mov_cr2r) {
 }
 
 make_EHelper(int) {
-  TODO();
+//   TODO();
+	raise_intr(id_dest->val, decinfo.seq_pc);
+	print_asm("int %s", id_dest->str);
 
-  print_asm("int %s", id_dest->str);
-
-  difftest_skip_dut(1, 2);
+	difftest_skip_dut(1, 2);
 }
 
 make_EHelper(iret) {
