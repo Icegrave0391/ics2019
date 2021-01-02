@@ -3,6 +3,7 @@
 
 // #define DEBUG
 // #define DIFF_TEST
+// #define CPU_EXEC_DBG
 #define HAS_IOE
 #if _SHARE
 // do not enable these features while building a reference design

@@ -61,7 +61,7 @@ make_EHelper(pusha) {
 	rtl_push(&reg_l(R_ECX));
 	rtl_push(&reg_l(R_EDX));
 	rtl_push(&reg_l(R_EBX));
-	rtl_push(&reg_l(s0));
+	rtl_push(&s0);
 	rtl_push(&reg_l(R_EBP));
 	rtl_push(&reg_l(R_ESI));
 	rtl_push(&reg_l(R_EDI));
