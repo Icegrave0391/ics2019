@@ -37,14 +37,15 @@ void cpu_exec(uint64_t n) {
       return;
     default: nemu_state.state = NEMU_RUNNING;
   }
-
+	int i = 0;
   for (; n > 0; n --) {
     __attribute__((unused)) vaddr_t ori_pc = cpu.pc;
 
     /* Execute one instruction, including instruction fetch,
      * instruction decode, and the actual execution. */
     __attribute__((unused)) vaddr_t seq_pc = exec_once();
-		printf("current pc: 0x%x\n", ori_pc);
+		i += 1;
+		printf("current pc: 0x%x times: %d\n", ori_pc, i);
 #if defined(DIFF_TEST)
   difftest_step(ori_pc, cpu.pc);
 #endif
