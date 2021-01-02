@@ -81,7 +81,7 @@ void cpu_exec(uint64_t n) {
 		// debug
 		if(seq_pc == 0x1006da || ori_pc == 0x1006da) {
 			printf("TRAP!!\n");
-			break;
+			return;
 		}
   }
 
