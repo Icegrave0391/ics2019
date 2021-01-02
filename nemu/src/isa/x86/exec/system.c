@@ -1,8 +1,20 @@
 #include "cpu/exec.h"
 
 make_EHelper(lidt) {
-  TODO();
-
+//   TODO();
+/*
+	IF OperandSize = 16
+    THEN IDTR.Limit:Base := m16:24 (* 24 bits of base loaded *)
+	ELSE IDTR.Limit:Base := m16:32
+    FI;
+*/
+	cpu.idtr.limit = vaddr_read(id_dest->addr, 2);
+	if (decinfo.isa.is_operand_size_16){
+	cpu.idtr.base = vaddr_read(id_dest->addr + 2, 4) & 0xffffff;
+	}
+	else{
+		cpu.idtr.base = vaddr_read(id_dest->addr + 2, 4);
+	}
   print_asm_template1(lidt);
 }
 
