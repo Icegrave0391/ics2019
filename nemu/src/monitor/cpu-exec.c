@@ -80,10 +80,10 @@ void cpu_exec(uint64_t n) {
 
     if (nemu_state.state != NEMU_RUNNING) break;
 		// debug
-		if(seq_pc == 0x1006da || ori_pc == 0x1006da) {
-			printf("TRAP!!\n");
-			nemu_state.state = NEMU_END;
-		}
+		// if(seq_pc == 0x1006da || ori_pc == 0x1006da) {
+		// 	printf("TRAP!!\n");
+		// 	nemu_state.state = NEMU_END;
+		// }
   }
 
   switch (nemu_state.state) {
