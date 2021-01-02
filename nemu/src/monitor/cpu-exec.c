@@ -78,6 +78,8 @@ void cpu_exec(uint64_t n) {
 #endif
 
     if (nemu_state.state != NEMU_RUNNING) break;
+		// debug
+		if(seq_pc == 0x1006da) break;
   }
 
   switch (nemu_state.state) {
