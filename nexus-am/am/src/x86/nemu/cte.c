@@ -1,6 +1,6 @@
 #include <am.h>
 #include <x86.h>
-
+#include <klib.h>
 static _Context* (*user_handler)(_Event, _Context*) = NULL;
 
 void __am_irq0();
@@ -9,7 +9,9 @@ void __am_vectrap();
 void __am_vecnull();
 
 _Context* __am_irq_handle(_Context *c) {
-  _Context *next = c;
+	printf("Context trap num: %d\n", c->irq);
+	printf("Context reserved eip: 0x%x, cs: 0x%x, eflags: 0x%x\n", c->eip, c->cs, c->eflags);
+	_Context *next = c;
   if (user_handler) {
     _Event ev = {0};
     switch (c->irq) {
