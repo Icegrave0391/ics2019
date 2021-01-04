@@ -38,8 +38,8 @@ static uintptr_t loader(PCB *pcb, const char *filename)
 	/* find load-type program headers */
 	for(uint16_t i = 0; i < elf_ehdr.e_phnum; i++){
 		ramdisk_read((void *)&elf_phdr, elf_ehdr.e_phoff + i * elf_ehdr.e_phentsize, sizeof(Elf_Phdr));
-		Log("segment p_offset from phdr: 0x%x, from ehdr: 0x%x\n", elf_phdr.p_offset, elf_ehdr.e_phoff + i * elf_ehdr.e_phentsize);
-		Log("current type: %d\n", elf_phdr.p_type);
+		// Log("segment p_offset from phdr: 0x%x, from ehdr: 0x%x\n", elf_phdr.p_offset, elf_ehdr.e_phoff + i * elf_ehdr.e_phentsize);
+		// Log("current type: %d\n", elf_phdr.p_type);
 		if(elf_phdr.p_type != PT_LOAD){
 			continue;
 		}
