@@ -13,9 +13,9 @@ _Context* do_syscall(_Context *c) {
 	a[2] = c->GPR3;
 	a[3] = c->GPR4;
 	uintptr_t res = 0;
-  switch (a[0]) {
+  switch (a[0]) {  /* syscall.type (called by user at _syscall_(type, args)) */
 		case SYS_yield: res = sys_yield();break;
-		// case SYS_exit: sys_exit(a[1])
+		case SYS_exit: sys_exit(a[1]);break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
