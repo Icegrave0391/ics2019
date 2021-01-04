@@ -112,14 +112,14 @@ make_EHelper(cltd) {
 	*/
 	if (decinfo.isa.is_operand_size_16) {
 		// TODO();
-    rtl_sext(&s0, &reg_l(R_EAX), 2);
+    	rtl_sext(&s0, &reg_l(R_EAX), 2);
 		rtl_sari(&s0, &s0, 16);
 		rtl_sr(R_DX, &s0, 2);
-  }
-  else {
+  	}
+ 	 else {
     // TODO();
 		rtl_sari(&reg_l(R_EDX), &reg_l(R_EAX), 31);
-  }
+  	}
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cwtl" : "cltd");
 }
@@ -137,11 +137,11 @@ make_EHelper(cwtl) {
 		rtl_lr(&s0, R_AX, 1);
 		rtl_sext(&s0, &s0, 1);
 		rtl_sr(R_AX, &s0, 1);
-  }
-  else {
+  	}
+  	else {
     // TODO();
 		rtl_sext(&reg_l(R_EAX), &reg_l(R_EAX), 2);
-  }
+  	}
 
   print_asm(decinfo.isa.is_operand_size_16 ? "cbtw" : "cwtl");
 }
@@ -157,6 +157,24 @@ make_EHelper(movzx) {
   id_dest->width = decinfo.isa.is_operand_size_16 ? 2 : 4;
   operand_write(id_dest, &id_src->val);
   print_asm_template2(movzx);
+}
+
+make_EHelper(movsb){
+	s0 = reg_l(R_ESI);
+	rtl_lm(&s0, &s0, 1);
+	rtl_sm(&reg_l(R_EDI), &s0, 1);
+	reg_l(R_ESI) += 1;
+	reg_l(R_EDI) += 1;
+	print_asm_template2(movsb);
+}
+
+make_EHelper(movsl){
+	s0 = reg_l(R_ESI);
+	rtl_lm(&s0, &s0, 4);
+	rtl_sm(&reg_l(R_EDI), &s0, 4);
+	reg_l(R_ESI) += 4;
+	reg_l(R_EDI) += 4;
+	print_asm_template2(movsl);
 }
 
 make_EHelper(lea) {

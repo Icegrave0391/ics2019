@@ -19,6 +19,8 @@ make_EHelper(leave);
 make_EHelper(lea);
 make_EHelper(movzx);
 make_EHelper(movsx);
+make_EHelper(movsb);
+make_EHelper(movsl);
 make_EHelper(cwtl);
 make_EHelper(cltd);
 // special
