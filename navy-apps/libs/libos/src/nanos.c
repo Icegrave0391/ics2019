@@ -65,7 +65,22 @@ int _write(int fd, void *buf, size_t count) {
 }
 
 void *_sbrk(intptr_t increment) {
-  return (void *)-1;
+	extern char end;
+	/* Tricky: use a static variable to record the change of _end */
+	static intptr_t program_break = &end; /* Important! */
+	intptr_t ori_program_break = program_break;
+
+	if(_syscall_(SYS_brk, increment, 0, 0) == 0){
+		/* should do syscall_brk first,
+		 * because we did nothing in sys_brk()
+		 */
+		program_break += increment;
+		return (void *)ori_program_break;
+	}
+	else{
+		return (void *)-1;
+	}
+  // return (void *)-1;
 }
 
 int _read(int fd, void *buf, size_t count) {

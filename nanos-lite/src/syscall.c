@@ -4,7 +4,7 @@
 uint32_t sys_yield();
 uint32_t sys_exit(int state);
 uint32_t sys_write(int fd, const void *buf, size_t count);
-
+uint32_t sys_brk(void *addr);
 _Context* do_syscall(_Context *c) {
   uintptr_t a[4];
 	/* type for syscall */
@@ -18,6 +18,7 @@ _Context* do_syscall(_Context *c) {
 		case SYS_yield: res = sys_yield(); break;
 		case SYS_exit: res = sys_exit(a[1]); break;
 		case SYS_write: res = sys_write(a[1], (void *)a[2], a[3]); break;
+		case SYS_brk: res = sys_brk((void *)a[1]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 
@@ -46,4 +47,18 @@ uint32_t sys_write(int fd, const void *buf, size_t count){
 		}
 	}
 	return count;
+}
+
+uint32_t sys_brk(void *addr){
+	/* should do nothing!!
+	 * the real funtion should be implemented at nanos.c _sbrk
+	 * it seems strange to implement sys_brk in _sbrk
+	 * because we must use a static variable to record the change of _end
+	 */
+
+	/* semantic: _end <- addr */
+	// _end <- addr;
+
+	/* always successful for pa3.3 */
+	return 0;
 }
