@@ -54,8 +54,9 @@ void _exit(int status) {
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  _exit(SYS_open);
-  return 0;
+  // _exit(SYS_open);
+	int fd = _syscall_(SYS_open, path, flags, mode);
+  return fd;
 }
 
 int _write(int fd, void *buf, size_t count) {
@@ -80,11 +81,11 @@ void *_sbrk(intptr_t increment) {
 	else{
 		return (void *)-1;
 	}
-  // return (void *)-1;
 }
 
 int _read(int fd, void *buf, size_t count) {
-  _exit(SYS_read);
+  // _exit(SYS_read);
+	// _syscall_(SYS_read, )
   return 0;
 }
 
