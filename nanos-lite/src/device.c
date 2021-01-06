@@ -42,13 +42,15 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 static char dispinfo[128] __attribute__((used)) = {};
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+	printf("[display_read] try to read offset: %lu, and size: %lu.\n", offset, len);
   strncpy((char *)buf, dispinfo + offset, len);
 	return len;
 }
 
 #define UINT_SZ 4
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  /* write the len bytes from buf to the screen(offset -> coord) */
+	printf("[fb_write] try to write offset: %lu, and size: %lu.\n", offset, len);
+	/* write the len bytes from buf to the screen(offset -> coord) */
 	/* calc w from len */
 	int w = len / UINT_SZ;
 	int h = 1;
