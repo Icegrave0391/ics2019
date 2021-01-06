@@ -10,6 +10,11 @@ size_t fs_write(int fd, const void *buf, size_t len);
 size_t fs_lseek(int fd, size_t offset, int whence);
 int fs_close(int fd);
 
+/* special file APIs */
+/* serial API */
+size_t serial_write(const void *buf, size_t offset, size_t len);
+size_t events_read(void *buf, size_t offset, size_t len) ;
+
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
 
@@ -36,10 +41,11 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 
 /* This is the information about all files in disk. */
 static Finfo file_table[] __attribute__((used)) = {
-  {"stdin", 0, 0, invalid_read, invalid_write},
-  {"stdout", 0, 0, invalid_read, invalid_write},
-  {"stderr", 0, 0, invalid_read, invalid_write},
+  {"stdin", 0, 0, 0, invalid_read, invalid_write},
+  {"stdout", 0, 0, 0, invalid_read, serial_write},
+  {"stderr", 0, 0, 0, invalid_read, serial_write},
 #include "files.h"
+	{"/dev/events", 0, 0, 0, events_read, invalid_write}
 };
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
@@ -64,7 +70,7 @@ int fs_open(const char *pathname, int flags, int mode){
 		}
 	}
 	assert(fd >= 0);
-	printf("tried to open file %s, fd: %d\n", pathname, fd);
+	printf("[fs_open] tried to open file %s, fd: %d\n", pathname, fd);
 	return fd;
 }
 
@@ -105,7 +111,6 @@ size_t fs_write(int fd, const void *buf, size_t len)
 	assert(fd >= 0 && fd < NR_FILES);
 	size_t wlen = -1;
 	Finfo file = file_table[fd];
-	printf("current file: %d %s, size: %lu\n", fd, file.name, file.size);
 	if(file.write){
 		wlen = file.write(buf, file.open_offset, len);
 		(&file_table[fd])->open_offset += wlen;
@@ -135,7 +140,6 @@ size_t fs_write(int fd, const void *buf, size_t len)
 size_t fs_lseek(int fd, size_t offset, int whence)
 {
 	assert(fd < NR_FILES && fd > FD_STDERR);
-	printf("[fs_lseek] try to seek file fd: %d and offset: %lu\n", fd, offset);
 	Finfo *file = &file_table[fd];
 	size_t ret = -1;
 	/* lseek() allows the file offset to be set beyond the end of the file */
