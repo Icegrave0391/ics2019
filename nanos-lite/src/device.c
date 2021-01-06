@@ -48,15 +48,39 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 
 #define UINT_SZ 4
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  /* write the len bytes from buf to the screen(offset -> coord) */
-	/* calc w from len */
-	int w = len / UINT_SZ;
-	int h = 1;
-	/* convert to int unit offset */
-	offset = offset / UINT_SZ;
-	int x = offset % screen_width();
-	int y = offset / screen_width();
-	draw_rect((uint32_t *)buf, x, y, w, h);
+  // /* write the len bytes from buf to the screen(offset -> coord) */
+	// /* calc w from len */
+	// int w = len / UINT_SZ;
+	// int h = 1;
+	// /* convert to int unit offset */
+	// offset = offset / UINT_SZ;
+	// int x = offset % screen_width();
+	// int y = offset / screen_width();
+	// draw_rect((uint32_t *)buf, x, y, w, h);
+	// return len;
+	int x, y;
+	offset = offset >> 2;
+	y = offset / screen_width();
+	x = offset % screen_width();
+	//printf("%d %d\n",x,y);
+	int lenth = len >> 2;
+	int len1, len2 = 0, len3 = 0;
+
+	len1 = lenth <= (screen_width() - x) ? lenth : screen_width() - x;
+	draw_rect((uint32_t *)buf, x, y, len1, 1);
+
+	if ((lenth > len1) && ((lenth - len1) > screen_width()))
+	{
+		len2 = lenth - len1;
+		draw_rect((uint32_t *)buf + len1, 0, y + 1, screen_width(), len2 / screen_width());
+	}
+
+	if (lenth - len1 - len2 > 0)
+	{
+		len3 = lenth - len1 - len2;
+		draw_rect((uint32_t *)buf + len1 + len2, 0, y + len2 / screen_width() + 1, len3, 1);
+	}
+	//draw_rect((uint32_t *)buf,x,y,lenth,1);
 	return len;
 }
 
