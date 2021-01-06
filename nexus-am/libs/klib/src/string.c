@@ -25,15 +25,14 @@ char *strcpy(char* dst,const char* src) {
 }
 
 char* strncpy(char* dst, const char* src, size_t n) {
-  if(!dst || !src) return dst;
+  if(dst == NULL || src == NULL) return dst;
 	char *cpy = dst;
 	size_t i = 0;
 	while(i < n && *src != '\0'){
 		*cpy++ = *src++;
 		i += 1;
 	}
-	i += 1;
-	while(i < n){
+	while(i++ < n){
 		*cpy++ = '\0';
 	}
 	return dst;
