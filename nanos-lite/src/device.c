@@ -61,6 +61,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
 size_t fbsync_write(const void *buf, size_t offset, size_t len) {
   draw_sync();
+	return 0;
 }
 
 void init_device() {
