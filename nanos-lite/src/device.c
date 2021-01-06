@@ -42,7 +42,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 static char dispinfo[128] __attribute__((used)) = {};
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-	printf("[display_read] try to read offset: %lu, and size: %lu.\n", offset, len);
+	printf("[displayinfo_read] try to read offset: %lu, and len: %lu.\n", offset, len);
   strncpy((char *)buf, dispinfo + offset, len);
 	return len;
 }
@@ -73,6 +73,11 @@ void init_device() {
 
   // TODO: print the string to array `dispinfo` with the format
   // described in the Navy-apps convention
+
+	/* VERY IMPORTANT!!
+	 * we should init dispinfo -> 0 first, to ensure fgetc() in ndl.c works well
+	 */
+	memset(dispinfo, 0, 128 * sizeof(char));
 	sprintf(dispinfo, "WIDTH:%d\nHEIGHT:%d\n", screen_width(), screen_height());
 	printf("dispinfo:\n%s\n", dispinfo);
 }
