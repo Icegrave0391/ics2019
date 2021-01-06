@@ -64,6 +64,7 @@ int fs_open(const char *pathname, int flags, int mode){
 		}
 	}
 	assert(fd >= 0);
+	printf("tried to open file %s, fd: %d\n", pathname, fd);
 	return fd;
 }
 
