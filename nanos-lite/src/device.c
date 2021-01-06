@@ -20,18 +20,15 @@ static const char *keyname[256] __attribute__((used)) = {
 
 size_t events_read(void *buf, size_t offset, size_t len) {
   int keycode = read_key();
-	printf("READ KEY: %d\n", keycode);
 	/* handle keyboard event */
 	if(keycode != _KEY_NONE){
 		/* key down */
 		if(keycode & KEYDOWN_MASK){
 			keycode = keycode ^ KEYDOWN_MASK;
-			printf("keydown %s\n", keyname[keycode]);
 			sprintf(buf, "kd %s\n", keyname[keycode]);
 		}
 		/* key up */
 		else{
-			printf("keyup %s\n", keyname[keycode]);
 			sprintf(buf, "ku %s\n", keyname[keycode]);
 		}
 	}
