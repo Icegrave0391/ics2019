@@ -104,6 +104,7 @@ size_t fs_write(int fd, const void *buf, size_t len)
 	assert(fd >= 0 && fd < NR_FILES);
 	size_t wlen = -1;
 	Finfo file = file_table[fd];
+	printf("current file: %d %s, size: %lu\n", fd, file.name, file.size);
 	if(file.write){
 		wlen = file.write(buf, file.open_offset, len);
 		(&file_table[fd])->open_offset += wlen;
