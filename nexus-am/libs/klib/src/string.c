@@ -14,7 +14,7 @@ size_t strlen(const char *s) {
 char *strcpy(char* dst,const char* src) {
 	/*
 	 * The stpcpy() and strcpy() functions copy the string src to dst (including
-   * the terminating `\0' character.)
+   	 * the terminating `\0' character.)
 	 */
 	if(!dst || !src) return dst;
 	char *cpy = dst;
@@ -25,16 +25,29 @@ char *strcpy(char* dst,const char* src) {
 }
 
 char* strncpy(char* dst, const char* src, size_t n) {
-  if(dst == NULL || src == NULL) return dst;
-	char *cpy = dst;
+//   if(dst == NULL || src == NULL) return dst;
+// 	char *cpy = dst;
+// 	size_t i = 0;
+// 	while(i < n && *src != '\0'){
+// 		*cpy++ = *src++;
+// 		i += 1;
+// 	}
+// 	while(i++ < n){
+// 		*cpy++ = '\0';
+// 	}
+// 	return dst;
+	if (dst == NULL || src == NULL)
+		return dst;
+// we should notice that size_t is unsigned
+	char *r = dst;
 	size_t i = 0;
-	while(i < n && *src != '\0'){
-		*cpy++ = *src++;
-		i += 1;
+	while (i < n && *src != '\0')
+	{
+		*r++ = *src++;
+		i++;
 	}
-	while(i++ < n){
-		*cpy++ = '\0';
-	}
+	while (i++ < n)
+		*r++ = '\0';
 	return dst;
 }
 
