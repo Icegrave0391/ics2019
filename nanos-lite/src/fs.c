@@ -135,6 +135,7 @@ size_t fs_write(int fd, const void *buf, size_t len)
 size_t fs_lseek(int fd, size_t offset, int whence)
 {
 	assert(fd < NR_FILES && fd > FD_STDERR);
+	printf("[fs_lseek] try to seek file fd: %d and offset: %lu\n", fd, offset);
 	Finfo *file = &file_table[fd];
 	size_t ret = -1;
 	/* lseek() allows the file offset to be set beyond the end of the file */
