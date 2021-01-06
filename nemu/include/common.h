@@ -2,7 +2,7 @@
 #define __COMMON_H__
 
 // #define DEBUG
-#define DIFF_TEST
+// #define DIFF_TEST
 // #define CPU_EXEC_DBG
 #define HAS_IOE
 #if _SHARE

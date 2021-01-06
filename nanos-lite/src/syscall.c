@@ -3,9 +3,12 @@
 
 uint32_t sys_yield();
 uint32_t sys_exit(int state);
+uint32_t sys_read(int fd, void *buf, size_t len);
 uint32_t sys_write(int fd, const void *buf, size_t count);
 uint32_t sys_brk(void *addr);
 uint32_t sys_open(const char *pathname, int flags);
+uint32_t sys_close(int fd);
+uint32_t sys_lseek(int fd, size_t offset, int whence);
 
 /* file system operations */
 int fs_open(const char *pathname, int flags, int mode);
@@ -26,8 +29,11 @@ _Context* do_syscall(_Context *c) {
   switch (a[0]) {  /* syscall.type (called by user at _syscall_(type, args)) */
 		case SYS_yield: res = sys_yield(); break;
 		case SYS_exit: res = sys_exit(a[1]); break;
-		case SYS_open: res = sys_open((const char *)a[1], a[2]);break;
+		case SYS_open: res = sys_open((const char *)a[1], a[2]); break;
+		case SYS_read: res = sys_read(a[1], (void *)a[2], a[3]); break;
 		case SYS_write: res = sys_write(a[1], (void *)a[2], a[3]); break;
+		case SYS_lseek: res = sys_lseek(a[1], a[2], a[3]); break;
+		case SYS_close: res = sys_close(a[1]); break;
 		case SYS_brk: res = sys_brk((void *)a[1]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
@@ -45,18 +51,24 @@ uint32_t sys_yield(){
 uint32_t sys_exit(int state){
 	_halt(state);
 }
+
+uint32_t sys_read(int fd, void *buf, size_t len){
+	return fs_read(fd, buf, len);
+}
+
 uint32_t sys_write(int fd, const void *buf, size_t count){
 	/* only write to stdout or stderr,
 	 * for didn't implement file system yet.
 	 */
 	// Log("called write!!\n");
-	if(fd == 1 || fd == 2){
-		size_t i;
-		for(i = 0; i < count; i++){
-			_putc(((char *)buf)[i]);
-		}
-	}
-	return count;
+	// if(fd == 1 || fd == 2){
+	// 	size_t i;
+	// 	for(i = 0; i < count; i++){
+	// 		_putc(((char *)buf)[i]);
+	// 	}
+	// }
+	// return count;
+	return fs_write(fd, buf, count);
 }
 
 uint32_t sys_brk(void *addr){
@@ -76,4 +88,12 @@ uint32_t sys_brk(void *addr){
 uint32_t sys_open(const char *pathname, int flags){
 	/* return the file descriptor */
 	return fs_open(pathname, 0, 0);
+}
+
+uint32_t sys_lseek(int fd, size_t offset, int whence){
+	return fs_lseek(fd, offset, whence);
+}
+
+uint32_t sys_close(int fd){
+	return fs_close(fd);
 }
