@@ -20,6 +20,7 @@ static const char *keyname[256] __attribute__((used)) = {
 
 size_t events_read(void *buf, size_t offset, size_t len) {
   int keycode = read_key();
+	printf("READ KEY: %d\n", keycode);
 	/* handle keyboard event */
 	if(keycode != _KEY_NONE){
 		/* key down */
@@ -36,7 +37,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 	}
 	/* timer event */
 	else{
-		// sprintf(buf, "t %u\n", uptime());
+		sprintf(buf, "t %u\n", uptime());
 	}
 	return strlen(buf);
 }
