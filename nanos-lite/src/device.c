@@ -25,16 +25,18 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 		/* key down */
 		if(keycode & KEYDOWN_MASK){
 			keycode = keycode ^ KEYDOWN_MASK;
+			printf("keydown %s\n", keyname[keycode]);
 			sprintf(buf, "kd %s\n", keyname[keycode]);
 		}
 		/* key up */
 		else{
+			printf("keyup %s\n", keyname[keycode]);
 			sprintf(buf, "ku %s\n", keyname[keycode]);
 		}
 	}
 	/* timer event */
 	else{
-		sprintf(buf, "t %u\n", uptime());
+		// sprintf(buf, "t %u\n", uptime());
 	}
 	return strlen(buf);
 }
